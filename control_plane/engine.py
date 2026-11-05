@@ -105,10 +105,17 @@ class Platform:
             with self.store.lock:
                 self.registry.pop(app_id)
                 self.store.data['apps'].pop(app_id)
+                # Borrar definitivamente una app también elimina sus eventos
+                # antiguos: al reimportarla, su historial debe empezar vacío.
+                self.store.data['events'] = [e for e in self.store.data['events']
+                                             if e['app'] != app_id]
                 self._save_registry()
                 self.store.save()
             shutil.rmtree(self.root / 'imported' / app_id, ignore_errors=True)
             shutil.rmtree(self.store.root / 'checkouts' / app_id, ignore_errors=True)
+            # Las imágenes de la app anterior no deben reutilizarse al reimportar.
+            if hasattr(self.backend, 'forget_app'):
+                self.backend.forget_app(app_id)
         return {'removed': app_id}
 
     def list_apps(self):

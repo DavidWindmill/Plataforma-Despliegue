@@ -3,6 +3,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 import os
 import subprocess
+import logging
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from fastapi.responses import FileResponse, JSONResponse
@@ -41,6 +42,23 @@ async def invalid(req, exc):
 @app.exception_handler(RuntimeError)
 async def failed(req, exc):
     return JSONResponse(status_code=503, content={'detail':str(exc)})
+
+
+@app.exception_handler(Exception)
+async def unexpected_error(req, exc):
+    """Muestra un error útil y deja el traceback completo en la terminal.
+
+    No se publican rutas internas ni trazas completas en el navegador. El
+    usuario puede copiar el traceback de la consola para diagnosticarlo.
+    """
+    logging.getLogger('uvicorn.error').error(
+        'Excepcion no controlada en %s %s', req.method, req.url.path,
+        exc_info=(type(exc), exc, exc.__traceback__),
+    )
+    return JSONResponse(status_code=500, content={
+        'detail': f'Error interno ({type(exc).__name__}). '
+                  'Consulta el traceback en la consola de start_platform.bat.'
+    })
 
 
 @app.get('/')

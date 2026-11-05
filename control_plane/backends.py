@@ -16,6 +16,15 @@ class DockerBackend:
     def __init__(self):
         self.built = set()
 
+    def forget_app(self, app):
+        """Olvida imágenes ya compiladas cuando se elimina una aplicación.
+
+        Si se importa otra vez con el mismo ID, su nuevo código Git debe
+        compilarse de nuevo en lugar de reutilizar la caché en memoria.
+        """
+        prefix = f'dp-{safe_name(app)}-'
+        self.built = {tag for tag in self.built if not tag.startswith(prefix)}
+
     def cmd(self, *args, capture=True):
         try:
             proc = subprocess.run(['docker', *map(str, args)], text=True, capture_output=capture, timeout=480)
