@@ -1,0 +1,19 @@
+oasp4ha: 2.0.0
+context:
+  id: collector
+  api: ../OAS/collector.yml
+alternatives:
+  collector-1:
+    mode: CPU
+    behaviour:
+      execution_time: 50
+      availability: 24
+      reliability: 0.5
+      mandatory: true
+  collector-2:
+    mode: CPU
+    behaviour:
+      execution_time: 40
+      availability: 24
+      reliability: 0.4
+      mandatory: true

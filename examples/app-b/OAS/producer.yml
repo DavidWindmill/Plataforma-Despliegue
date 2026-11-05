@@ -1,0 +1,47 @@
+openapi: 3.1.0
+info:
+  title: App B producer
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      responses:
+        '200':
+          description: Estado
+  /metrics:
+    get:
+      responses:
+        '200':
+          description: Metricas QoS
+  /admin/simulate:
+    post:
+      responses:
+        '200':
+          description: Fallo simulado opcional
+x-deployment:
+  port: 8080
+  monitoring:
+    health_path: /health
+    metrics_path: /metrics
+    simulation_path: /admin/simulate
+  alternatives:
+    producer-1:
+      components:
+      - suffix: ''
+        repository:
+          url: https://github.com/DavidWindmill/app-b-producer.git
+          ref: main
+          docker_context: .
+        environment:
+          SERVICE_VARIANT: producer-1
+    producer-2:
+      components:
+      - suffix: ''
+        repository:
+          url: https://github.com/DavidWindmill/app-b-producer.git
+          ref: main
+          docker_context: .
+        environment:
+          SERVICE_VARIANT: producer-2
+  bindings:
+    COLLECTOR_URL: collector00

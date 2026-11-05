@@ -1,0 +1,20 @@
+oasp4ha: 2.0.0 #Openapi Specification 4 hibrid architectures
+context:
+  id: resultprocessing
+  api: ../OAS/result_processing.yml
+  author: SPILab
+alternatives:
+  resultprocessing-1:
+    mode: CPU
+    minimum_hw_req:
+      cpu: 4300000000
+      ram: 4
+    behaviour:
+      requests:
+        number_request: 10
+        maximum_request_size: 583333
+      execution_time: 10
+      availability: 24
+      reliability: 0.14
+      instances: 1
+      mandatory: true

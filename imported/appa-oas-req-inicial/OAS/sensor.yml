@@ -1,0 +1,171 @@
+openapi: 3.1.0
+info:
+  title: Temperature sensor
+  description: |
+    This is a description of a service that recieves temperature from a sensor and
+    add this value to an array list for re-send to the aggregator service.
+  # Extension for requirements
+  x-req:
+    $ref: ../REQ/sensor.yml
+  version: 1.0.0
+servers:
+- url:
+- description: Classical machine in wich the server is going to be deployed
+paths:
+  /recieve/{temp}:
+    post:
+      summary: Recieve data from sensor
+      description: Function that recieves temperature for the sensor.
+      parameters:
+      - name: temp
+        in: path
+        requiered: true 
+      responses:
+        "200":
+          description: "OK" 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      Temperature recieved succesfully.
+        default:
+          description: error produced.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      An error occured while recieving the temperature.
+  /reset:
+    get:
+      summary: Reset array of temperature.
+      description: Function to empty the array of temperatures.
+      responses:
+        "200":
+          description: "OK" 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      Array of temperature is reset.
+        default:
+          description: error produced.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      An error occured while the reset of the temperature.
+  /sendData:
+    get:
+      summary: Request to send the temperature array.
+      description: Request from aggregator for recieving the temperature array of this service.
+      responses:
+        "200":
+          description: "OK" 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    description: |
+                      Array of temperature.
+        default:
+          description: error produced.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      An error occured while sending the temperatures.
+  /health:
+    get:
+      summary: Estado para el monitor interno
+      responses:
+        "200":
+          description: Servicio disponible
+
+  /metrics:
+    get:
+      summary: Estadisticas operacionales para monitorizar QoS
+      responses:
+        "200":
+          description: Metricas en JSON
+
+  /admin/simulate:
+    post:
+      summary: Simulacion opcional para pruebas del despliegue
+      responses:
+        "200":
+          description: Configuracion temporal de fallos
+
+# Extension de despliegue: la plataforma no conoce repositorios ni endpoints.
+x-deployment:
+  port: 8080
+  monitoring:
+    health_path: /health
+    metrics_path: /metrics
+    simulation_path: /admin/simulate
+  environment:
+    AUTO_EMIT_INTERVAL_SECONDS: '4'
+    OBSERVABILITY_URL: ''
+    SENSOR_ID: $id
+  bindings:
+    AGGREGATOR_URL: aggregator00
+  instances:
+    sensor00:
+      environment:
+        SENSOR_ZONE: zone-1
+    sensor10:
+      environment:
+        SENSOR_ZONE: zone-2
+    sensor20:
+      environment:
+        SENSOR_ZONE: zone-3
+  alternatives:
+    sensor-1:
+      components:
+      - suffix: ''
+        repository:
+          url: https://github.com/DavidWindmill/app-a-sensor.git
+          ref: main
+          docker_context: .
+        environment:
+          SERVICE_VARIANT: sensor-1
+    sensor-2:
+      components:
+      - suffix: ''
+        repository:
+          url: https://github.com/DavidWindmill/app-a-sensor.git
+          ref: main
+          docker_context: .
+        environment:
+          SERVICE_VARIANT: sensor-2
+    sensor-3:
+      components:
+      - suffix: ''
+        repository:
+          url: https://github.com/DavidWindmill/app-a-sensor.git
+          ref: main
+          docker_context: .
+        environment:
+          SERVICE_VARIANT: sensor-3

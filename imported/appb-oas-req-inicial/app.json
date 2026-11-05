@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "id": "producer00",
+      "alternative": "producer-1"
+    },
+    {
+      "id": "collector00",
+      "alternative": "collector-1"
+    },
+    {
+      "id": "processor00",
+      "alternative": "processor-1"
+    }
+  ]
+}

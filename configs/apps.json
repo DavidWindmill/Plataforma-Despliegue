@@ -1,0 +1,10 @@
+{
+  "apps": {
+    "appa-oas-req-inicial": {
+      "package": "imported/appa-oas-req-inicial"
+    },
+    "appb-oas-req-inicial": {
+      "package": "imported/appb-oas-req-inicial"
+    }
+  }
+}

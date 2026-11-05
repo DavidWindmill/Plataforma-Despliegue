@@ -1,0 +1,158 @@
+openapi: 3.1.0
+info:
+  title: Result processing microservice
+  description: |
+    This is a description of a service that is in charge of recieving the results of Grover or Binary search algorithim.
+  # Extension for requirements
+  x-req:
+    $ref: ../REQ/result_processing.yml
+  version: 1.0.0
+servers:
+- url:
+- description: Classical machine in wich the server is going to be deployed
+
+paths:
+  /status:
+      get:
+        summary: Show the status of the microservice.
+        description: Function that returns the availability of the microservice.
+        responses:
+          "200":
+            description: "Online" 
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    result:
+                      type: string
+                      description: |
+                        The microservice is online.
+          default:
+            description: error produced.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    result:
+                      type: string
+                      description: |
+                        An error ocurred.
+  /groverprocessing/{result}:
+    get:
+      summary: Processing quantum result
+      description: Process the quantum result of Grover algorithim.
+      responses:
+        "200":
+          description: "OK" 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      Process completed.
+        default:
+          description: error produced.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      An error occured while launching the analysis.
+    parameters:
+    - name: result
+      in: paths
+      description: Result of the quantum algorithm.
+      required: true
+      schema:
+        type: object
+        properties:
+          state:
+            type: string
+          percentage:
+            type: integer
+      style: simple    
+  /binaryprocessing/{result}:
+    get:
+      summary: Processing binary search result
+      description: Process the result of Binary Search algorithim.
+      responses:
+        "200":
+          description: "OK" 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      Process completed.
+        default:
+          description: error produced.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+                    description: |
+                      An error occured while launching the analysis.
+    parameters:
+    - name: result
+      in: paths
+      description: Result of the binary search algorithm.
+      required: true
+      schema:
+        type: object
+        properties:
+          state:
+            type: string
+          percentage:
+            type: integer
+      style: simple    
+
+  /health:
+    get:
+      summary: Estado para el monitor interno
+      responses:
+        "200":
+          description: Servicio disponible
+
+  /metrics:
+    get:
+      summary: Estadisticas operacionales para monitorizar QoS
+      responses:
+        "200":
+          description: Metricas en JSON
+
+  /admin/simulate:
+    post:
+      summary: Simulacion opcional para pruebas del despliegue
+      responses:
+        "200":
+          description: Configuracion temporal de fallos
+
+# Extension de despliegue: la plataforma no conoce repositorios ni endpoints.
+x-deployment:
+  port: 8080
+  monitoring:
+    health_path: /health
+    metrics_path: /metrics
+    simulation_path: /admin/simulate
+  alternatives:
+    resultprocessing-1:
+      components:
+      - suffix: ''
+        repository:
+          url: https://github.com/DavidWindmill/app-a-result-processing.git
+          ref: main
+          docker_context: .

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deployment Platform | Monitorización QoS</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1120;--panel:#141f32;--panel2:#1b2a40;--border:#30425b;--ink:#edf3ff;--muted:#9fafc5;--accent:#75adff;--green:#61d6ac;--red:#ff888e;--amber:#ffcc7e;--violet:#c4a6ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% -10%,#182b4e 0,transparent 40%),var(--bg);color:var(--ink);font:14px/1.5 system-ui,'Segoe UI',sans-serif}header{border-bottom:1px solid var(--border);padding:19px max(22px,4vw);background:#10192acc;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}h1,h2,h3,p{margin:0}h1{font-size:23px;letter-spacing:-.5px}h2{font-size:23px}h3{font-size:16px}.sub{color:var(--muted)}small{font-size:11px;color:var(--muted)}main{max-width:1450px;margin:auto;padding:26px 23px}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.between{justify-content:space-between}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:15px}.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{border-radius:13px;background:var(--panel);border:1px solid var(--border);padding:18px}.card:hover{border-color:#49617e}.pill{border-radius:100px;background:#27384f;color:#c1ccda;padding:4px 11px;font-size:11px;letter-spacing:.2px;font-weight:650;white-space:nowrap}.pill.running,.pill.healthy{background:#123c33;color:var(--green)}.pill.violation,.pill.error{background:#562b36;color:var(--red)}.pill.deploying,.pill.stopping,.pill.pending{background:#523b22;color:var(--amber)}.section{margin:27px 0 12px}.hide{display:none!important}.action{cursor:pointer;background:#386cae;color:white;border:1px solid #4f83c5;border-radius:9px;padding:10px 15px;font:600 13px inherit}button{font-family:inherit;font-size:13px;font-weight:600}.action:hover{filter:brightness(1.17)}.action:disabled{opacity:.5;cursor:wait}.outline{background:#172740;border:1px solid var(--border)}.stop{background:#56303f;border:1px solid #8a4456}.kpi{padding:15px;background:var(--panel2);border:1px solid var(--border);border-radius:10px}.kpi b{display:block;font-size:26px;letter-spacing:-.8px}.kpi small{display:block}.service{transition:border-color .2s;position:relative;overflow:hidden}.service.failed{border-color:#ad505e;box-shadow:0 0 0 1px #66313d}.service.failed::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--red)}.service-name{font-weight:680;font-size:17px;letter-spacing:-.25px}.meta{font-size:12px;color:var(--muted);margin-top:3px}.meta code{color:#a9cfff;overflow-wrap:anywhere}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:16px}.metric{background:#0e192b;border:1px solid #293b54;padding:10px;border-radius:9px;min-width:0}.metric.fail{background:#381e2b;border-color:#a44b58}.metric-top{display:flex;justify-content:space-between;gap:6px}.metric strong{font-size:19px;display:block;margin:1px 0}.metric .bar{height:5px;background:#2a3b52;overflow:hidden;border-radius:20px;margin:8px 0 4px}.metric .fill{height:100%;border-radius:20px;background:var(--green)}.metric.fail .fill{background:var(--red)}svg.spark{display:block;height:31px;width:100%;margin-top:4px}.metric small{font-size:10px}.fault{background:#462334;border:1px solid #975066;border-radius:9px;color:#ffc1c7;padding:11px;margin-top:12px}.hero{padding:18px;background:linear-gradient(100deg,#162a42,#19223d);border:1px solid #344d73;border-radius:13px;margin-bottom:16px}.hero.warn{border-color:#ab5565;background:linear-gradient(90deg,#402534,#261c33)}.hero.ok{border-color:#428973;background:linear-gradient(95deg,#15362f,#19233b)}.hero .tag{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:1px}.hero .desc{margin-top:8px;font-size:17px;font-weight:650}.switch{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);align-items:center;gap:10px;margin-top:11px}.switch .from,.switch .to{padding:12px;border-radius:9px;background:#0d1929;border:1px solid #2f455f;font-size:13px;overflow-wrap:anywhere}.switch .to{border-color:#3f8c73}.switch .arrow{font-size:23px;text-align:center;color:var(--green)}.stage{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:14px}.stage span{padding:5px 9px;background:#182c43;border-radius:6px;color:#b5c9e6;font-size:11px}.stage .separator{padding:0;background:transparent;color:var(--muted)}.timeline{padding:0;margin:0;list-style:none;max-height:435px;overflow:auto}.timeline li{border-left:2px solid #3c5575;margin-left:8px;padding:1px 5px 17px 15px;position:relative}.timeline li:before{content:'';position:absolute;left:-5px;top:5px;width:8px;height:8px;border-radius:50%;background:#6685b3}.timeline li.bad{border-color:#b44b62}.timeline li.bad:before{background:var(--red)}.timeline li.good{border-color:#3a9274}.timeline li.good:before{background:var(--green)}.timeline li:last-child{padding-bottom:0}time{color:var(--muted);font-size:11px;display:block}.timeline strong{font-size:13px}.timeline p{font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}.note{font-size:11px;color:var(--muted);margin:22px 0 8px}.notice{display:none;padding:13px 16px;border:1px solid #597bb0;background:#193151;border-radius:9px;margin:0 0 15px}.notice.bad{background:#49242e;border-color:#aa5367}.empty{padding:24px;color:var(--muted)}.dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block}.dot.red{background:var(--red)}.hint{font-size:12px;color:var(--muted)}@media(max-width:850px){.cols{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:18px 14px}}@media(max-width:450px){.grid{grid-template-columns:1fr}.switch{grid-template-columns:1fr}.switch .arrow{transform:rotate(90deg)}header{padding:14px}}
+</style>
+</head>
+<body>
+<header><div><h1>⬡ Deployment Platform</h1><small>Control de despliegues · Contenedores Docker reales · Monitorización QoS</small></div><div class="row"><span class="pill" id="docker">Verificando Docker…</span><span class="pill" id="worker">Monitor Worker…</span></div></header>
+<main>
+<div id="notice" class="notice"></div>
+<section id="catalog"><div class="row between section"><div><h2>Aplicaciones</h2><p class="sub">Selecciona una aplicación para consultar los servicios y los cambios de despliegue.</p></div><div class="row"><label class="action" for="uploadApp">+ Añadir aplicación (ZIP)</label><input id="uploadApp" type="file" accept=".zip" style="display:none" onchange="uploadApplication(this)"><button id="deployAll" class="action" onclick="deployAll()">Desplegar todas</button><button class="action outline" onclick="refresh()">Actualizar</button></div></div><div id="apps" class="grid"></div></section>
+<section id="detail" class="hide">
+ <div class="row between"><button class="action outline" onclick="back()">← Aplicaciones</button><span id="appState" class="pill">—</span></div>
+ <div class="row between section"><div><h2 id="appTitle">—</h2><p id="planTitle" class="sub"></p></div><div class="row"><button id="analyze" class="action outline" onclick="analyzeApplication()">Analizar</button><button id="replan" class="action outline" onclick="replanApplication()">Redesplegar</button><button id="deploy" class="action" onclick="action('deploy')">Desplegar</button><button id="stop" class="action stop" onclick="action('stop')">Detener</button><button class="action outline" onclick="removeApplication()">Eliminar aplicación</button></div></div>
+ <div class="cols"><div class="kpi"><small>Contenedores activos</small><b id="servicesCount">0</b></div><div class="kpi"><small>Monitores</small><b id="monitorCount">0</b></div><div class="kpi"><small>Versión del plan</small><b id="version">0</b></div><div class="kpi"><small>Incidencias QoS</small><b id="incidents">0</b></div></div>
+ <div class="row between section"><h2>Última incidencia y adaptación</h2><span class="hint">Seguimiento automático del ciclo</span></div>
+ <div id="adaptation" class="hero"><p class="sub">Esperando eventos de monitorización.</p></div>
+ <div class="row between section"><h2>Métricas por microservicio</h2><span class="hint"><span class="dot"></span> Refresco web: 3 s · Muestreo del monitor: 4 s</span></div><div id="serviceList" class="grid"></div>
+ <div class="row between section"><h2>Historial de operaciones</h2><span class="hint">Fallos → planificación → comparación → contenedores nuevos</span></div><div class="card"><ul id="events" class="timeline"></ul></div>
+</section>
+<p class="note">Solo se consultan métricas QoS, estados de contenedor y eventos de despliegue. No se solicitan ni muestran temperaturas, humedad, lecturas ni resultados funcionales. Las métricas y sus degradaciones proceden de los microservicios; el planificador escoge alternativas de REQ; las sustituciones ejecutan comandos Docker reales.</p>
+</main>
+<script>
+let selected=null,requesting=false;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const state=x=>({running:'En ejecución',deploying:'Desplegando',stopping:'Deteniendo',registered:'Registrada',stopped:'Detenida',error:'Error',healthy:'Conforme',violation:'INCUMPLIMIENTO QoS',pending:'Inicializando'}[x]||x);
+const metrics=[['response_time_ms','Tiempo de respuesta','ms'],['execution_time','Tiempo de ejecución','u. QoS'],['availability','Disponibilidad','u. QoS'],['reliability','Fiabilidad (error)','índice'],['cost','Coste','u. QoS']];
+const vnum=x=>typeof x==='number'?x.toLocaleString('es-ES',{maximumFractionDigits:3}):'—';
+async function api(path,opt){const r=await fetch('/api'+path,opt),raw=await r.text();let d;try{d=JSON.parse(raw)}catch{d={detail:raw}}if(!r.ok)throw Error(typeof d.detail==='string'?d.detail:JSON.stringify(d.detail));return d}
+function notice(text,bad=false){$('notice').textContent=text;$('notice').className='notice'+(bad?' bad':'');$('notice').style.display='block'}
+async function refresh(){try{const [sys,apps]=await Promise.all([api('/system'),api('/apps')]);$('docker').textContent=sys.docker_available?'● Docker conectado':'● Docker desconectado';$('docker').className='pill '+(sys.docker_available?'running':'error');$('worker').textContent=sys.monitor_worker_connected?'● Monitores activos':'● Monitores desconectados';$('worker').className='pill '+(sys.monitor_worker_connected?'running':'error');// Cada tarjeta ofrece las tres operaciones principales sin entrar en los detalles.
+const cards=apps.map(applicationCard).join('');
+$('apps').innerHTML=cards||'<div class="card empty">No hay aplicaciones registradas. Pulsa «Añadir aplicación» y selecciona su ZIP.</div>';
+}catch(e){notice(e.message,true)}}
+// Activa/desactiva las acciones según el estado real de la aplicación.
+function applicationCard(a){
+ const busy = requesting || a.status==='deploying' || a.status==='stopping';
+ const running = a.status==='running';
+ const id = esc(a.id);
+ return `<article class="card">
+   <div class="row between"><h3>${esc(a.display_name)}</h3><span class="pill ${esc(a.status)}">${esc(state(a.status))}</span></div>
+   <div class="cols" style="grid-template-columns:repeat(3,1fr);margin:19px 0">
+     <div><small>Servicios</small><h2>${a.services}</h2></div>
+     <div><small>Monitores</small><h2>${a.monitors}</h2></div>
+     <div><small>Versión</small><h2>${a.version}</h2></div>
+   </div>
+   <div class="row card-actions">
+     <button class="action" onclick="catalogAction('${id}','deploy')" ${busy||running?'disabled':''}>Desplegar</button>
+     <button class="action outline" onclick="catalogAction('${id}','stop')" ${busy||!['running','error'].includes(a.status)?'disabled':''}>Detener</button>
+     <button class="action stop" onclick="catalogAction('${id}','delete')" ${busy?'disabled':''}>Borrar</button>
+     <button class="action outline" onclick="renameApplication('${id}')" ${busy?'disabled':''}>Renombrar</button>
+     <button class="action outline" onclick="openApp('${id}')" ${busy?'disabled':''}>Ver estado y QoS</button>
+   </div>
+ </article>`;
+}
+
+// Usa la API existente para trabajar sobre la aplicación de esta tarjeta.
+async function catalogAction(id, operation){
+ if(requesting)return;
+ if(operation==='stop' && !confirm('¿Detener los contenedores de '+id+'?'))return;
+ if(operation==='delete' && !confirm('¿Borrar '+id+' y detener sus contenedores? Esta operación elimina sus especificaciones.'))return;
+ requesting=true;
+ await refresh();
+ notice(operation==='deploy'?'Desplegando '+id+' desde sus repositorios Git…':operation==='stop'?'Deteniendo '+id+'…':'Borrando '+id+'…');
+ try{
+   const url='/apps/'+encodeURIComponent(id);
+   await api(url+(operation==='delete'?'':'/'+operation),{method:operation==='delete'?'DELETE':'POST'});
+   if(operation==='delete' && selected===id)selected=null;
+   notice(operation==='deploy'?'Aplicación desplegada.':operation==='stop'?'Aplicación detenida.':'Aplicación borrada.');
+ }catch(e){notice(e.message,true)}
+ finally{requesting=false;await refresh()}
+}
+
+// Renombra solo el título mostrado. No cambia los IDs de Docker ni de REQ/OAS.
+async function renameApplication(id){
+ if(requesting)return;
+ try{
+  const current=await api('/apps/'+encodeURIComponent(id));
+  const newName=prompt('Nombre visible de la aplicación:',current.display_name);
+  if(newName===null)return;
+  if(!newName.trim()){notice('Introduce un nombre no vacío.',true);return;}
+  await api('/apps/'+encodeURIComponent(id)+'/name',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:newName.trim()})});
+  await refresh();
+  if(selected===id)await updateDetail();
+  notice('Nombre actualizado. El despliegue no se ha modificado.');
+ }catch(e){notice(e.message,true)}
+}
+
+// Reutiliza el despliegue individual y devuelve un resultado por aplicación.
+async function deployAll(){
+ if(requesting)return;
+ requesting=true;
+ notice('Desplegando todas las aplicaciones pendientes de forma secuencial…');
+ try{
+  const {results}=await api('/apps/deploy-all',{method:'POST'});
+  const failures=results.filter(x=>x.status==='error');
+  const done=results.filter(x=>x.status==='deployed').length;
+  const skipped=results.filter(x=>x.status==='already_running').length;
+  const description=`${done} desplegadas · ${skipped} ya activas`;
+  notice(failures.length?description+' · Errores: '+failures.map(x=>x.id+': '+x.error).join(' | '):description,!!failures.length);
+ }catch(e){notice(e.message,true)}
+ finally{requesting=false;await refresh()}
+}
+
+function back(){selected=null;$('catalog').classList.remove('hide');$('detail').classList.add('hide');$('notice').style.display='none';refresh()}
+async function openApp(id){selected=id;$('catalog').classList.add('hide');$('detail').classList.remove('hide');$('notice').style.display='none';await updateDetail()}
+function sparkline(history,key,invalid){const vals=history.map(e=>e.metrics?.[key]).filter(v=>typeof v==='number');if(vals.length<2)return '';let lo=Math.min(...vals),hi=Math.max(...vals);if(hi===lo){lo-=1;hi+=1}const points=vals.map((v,i)=>`${(i/(vals.length-1)*100).toFixed(1)},${(29-(v-lo)/(hi-lo)*24).toFixed(1)}`).join(' ');return `<svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-label="Tendencia reciente"><polyline points="${points}" fill="none" stroke="${invalid?'#ff888e':'#75adff'}" stroke-width="1.65" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`}
+function metricHTML(key,label,unit,n,limit,history){const fail=typeof n==='number'&&(('max'in limit&&n>limit.max)||('min'in limit&&n<limit.min));const boundary='max'in limit?limit.max:limit.min;const ratio=typeof n==='number'&&boundary?('max'in limit?n/boundary:boundary/Math.max(n,.0001)):0;const pct=Math.max(0,Math.min(100,ratio*85));const limitText=('max'in limit?'Máximo ':'Mínimo ')+vnum(boundary);return `<div class="metric ${fail?'fail':''}"><div class="metric-top"><small>${esc(label)}</small>${fail?'<span style="color:var(--red)">⚠</span>':''}</div><strong>${vnum(n)} <small>${esc(unit)}</small></strong><div class="bar"><div class="fill" style="width:${pct.toFixed(1)}%"></div></div><small>${esc(limitText)}</small>${sparkline(history,key,fail)}</div>`}
+function serviceHTML(id,s){
+ const m=s.monitor||{},spec=s.service.definition||{},limits=spec.monitor?.limits||{},history=m.history||[];
+ const failed=m.status==='violation';
+ // El ID lógico puede seguir siendo search00 cuando Docker ya está ejecutando
+ // otro contenedor: mostrar siempre alternativa y container_id de Docker.
+ return `<article class="card service ${failed?'failed':''}"><div class="row between"><h3 class="service-name">${esc(id)} <small>· ${esc(spec.alternative||'desconocida')}</small></h3><span class="pill ${esc(m.status||'pending')}">${esc(state(m.status||'pending'))}</span></div><div class="meta">Repositorio <code>${esc(spec.repository||'')}</code> · Contenedor Docker <code>${esc(s.runtime?.container_id||'—')}</code></div><div class="metrics">${metrics.filter(([k])=>limits[k]).map(([k,label,unit])=>metricHTML(k,label,unit,m.metrics?.[k],limits[k],history)).join('')}</div>${m.violations?.length?`<div class="fault">⚠ ${esc(m.violations.join(' · '))}</div>`:''}</article>`
+}
+const titles={qos_violated:'⚠ Monitor detectó el incumplimiento',planner_requested:'Solicitud al planificador interno',planner_plan_generated:'Nuevo archivo de plan generado',planner_no_alternative:'No hay alternativa en REQ',deployment_started:'Análisis del nuevo plan',service_created:'Contenedor Docker creado',service_removed:'Contenedor Docker retirado',deployment_completed:'Nuevo despliegue confirmado',adaptation_completed:'✓ Sustitución real completada',application_stopped:'Aplicación detenida',application_renamed:'Nombre modificado',deployment_failed:'Error de despliegue',monitor_error:'Error de monitor',planner_error:'Error de planificación',deployment_rolled_back:'↶ Reversión de contenedores realizada',rollback_failed:'⚠ Reversión fallida',startup_recovery_requested:'Recuperación solicitada',startup_recovery_completed:'Estado recuperado'};
+function eventHTML(e){
+ const bad=['qos_violated','planner_error','deployment_failed','rollback_failed','monitor_error','planner_no_alternative'].includes(e.type);
+ const good=['deployment_completed','adaptation_completed','deployment_rolled_back'].includes(e.type);
+ const parts=[];
+ if(e.service)parts.push('Servicio: '+e.service);
+ if(e.services?.length)parts.push('Servicios: '+e.services.join(', '));
+ if(e.changes?.length)parts.push(e.changes.map(x=>x.service+': '+x.from+' → '+x.to).join(' | '));
+ if(e.alternative)parts.push('Alternativa: '+e.alternative);
+ if(e.container_id)parts.push('Docker: '+e.container_id);
+ if(e.error)parts.push(e.error);
+ if(e.reason)parts.push(e.reason);
+ if(e.version)parts.push('versión '+e.version);
+ return `<li class="${bad?'bad':good?'good':''}"><time>${esc(new Date(e.time).toLocaleString('es-ES'))}</time><strong>${esc(titles[e.type]||e.type)}</strong><p>${esc(parts.join(' · '))}</p></li>`
+}
+function adaptationHTML(d){
+ const events=d.events||[],last=events.find(e=>e.type==='adaptation_completed' && Array.isArray(e.changes));
+ const pending=d.status==='deploying' || d.events[0]?.type==='planner_plan_generated';
+ if(pending)return `<div class="tag">Adaptación en curso</div><div class="desc">Se está comprobando el redespliegue en Docker.</div>`;
+ // Mostrar errores posteriores a la última adaptación, sin sugerir éxito.
+ const error=events.find(e=>['deployment_failed','rollback_failed','planner_error'].includes(e.type));
+ if(error && (!last || events.indexOf(error)<events.indexOf(last))){
+  return `<div class="tag">⚠ Adaptación no completada</div><div class="desc">${esc(titles[error.type])}</div><p class="sub">${esc(error.error||'Consulta el historial para más detalles.')}<p class="sub">${d.status==='error'?'Estado ERROR: requiere intervención.':'Se conserva el plan anterior si la reversión fue posible.'}</p>`;
+ }
+ if(last){
+  const changes=last.changes||[];
+  const before=changes.map(x=>x.service+' ('+x.from+')').join(' + ');
+  const after=changes.map(x=>x.service+' ('+x.to+')').join(' + ');
+  const removed=last.removed_containers||{},created=last.created_containers||{};
+  return `<div class="tag">✓ Adaptación ejecutada en Docker · ${esc(new Date(last.time).toLocaleString('es-ES'))}</div><div class="desc">${esc(changes.length)} alternativa(s) sustituida(s) realmente</div><div class="switch"><div class="from"><small>ANTES · alternativas retiradas</small><div><strong>${esc(before)}</strong></div><small>${esc(Object.entries(removed).map(([k,v])=>k+': '+v.container_id).join(' · '))}</small></div><div class="arrow">→</div><div class="to"><small>DESPUÉS · alternativas desplegadas</small><div><strong>${esc(after)}</strong></div><small>${esc(Object.entries(created).map(([k,v])=>k+': '+v.container_id).join(' · '))}</small></div></div><p class="sub" style="margin-top:10px">${last.kept?.length||0} contenedores sin cambios · ${Object.keys(created).length} nuevos identificadores Docker</p>`;
+ }
+ return '<div class="tag">Sin incidencias</div><div class="desc">Los monitores están a la espera de un incumplimiento QoS.</div>';
+}
+async function updateDetail(){if(!selected)return;try{let d=await api('/apps/'+encodeURIComponent(selected));const running=d.status==='running',active=Object.entries(d.active);$('appTitle').textContent=d.display_name;$('appState').className='pill '+d.status;$('appState').textContent=state(d.status);$('planTitle').textContent='Plan vigente: '+(d.current_plan?.services?.map(s=>s.id+' ('+s.alternative+')').join(', ')||'ninguno');$('servicesCount').textContent=active.length;$('monitorCount').textContent=running?active.length:0;$('version').textContent=d.version;$('incidents').textContent=d.events.filter(e=>e.type==='qos_violated').length;$('deploy').disabled=requesting||running||d.status==='deploying';$('replan').disabled=requesting||!running;$('stop').disabled=requesting||!['running','deploying','error'].includes(d.status);$('serviceList').innerHTML=active.length?active.sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>serviceHTML(k,v)).join(''):'<div class="card empty">Todavía no hay contenedores. Pulsa «Desplegar» para iniciar la ejecución y los monitores.</div>';$('adaptation').innerHTML=adaptationHTML(d);$('adaptation').className='hero '+(d.events[0]&&d.events[0].type==='qos_violated'?'warn':d.events.some(e=>e.type==='adaptation_completed')?'ok':'');$('events').innerHTML=d.events.slice(0,65).map(eventHTML).join('')||'<li>Sin operaciones.</li>'}catch(e){notice(e.message,true)}}
+async function analyzeApplication(){
+ if(!selected)return;
+ try{
+  const result=await api('/apps/'+encodeURIComponent(selected)+'/analysis');
+  const ops=result.operations||[];
+  notice('Análisis del plan inicial: '+(ops.filter(o=>o.action!=='keep').map(o=>o.action+' '+o.service).join(', ') || 'No hay cambios.'));
+ }catch(e){notice(e.message,true)}
+}
+async function replanApplication(){
+ if(requesting||!selected||!confirm('¿Planificar y aplicar una alternativa diferente?'))return;
+ requesting=true;
+ try{await api('/apps/'+encodeURIComponent(selected)+'/replan',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});notice('Plan alternativo aplicado.')}catch(e){notice(e.message,true)}
+ finally{requesting=false;await updateDetail()}
+}
+async function uploadApplication(input){
+ if(!input.files.length)return;
+ const form=new FormData();form.append('file',input.files[0]);
+ notice('Importando OAS/ y REQ/ (sin descargar repositorios)…');
+ try{await api('/apps/import',{method:'POST',body:form});await refresh();notice('Aplicación añadida. Puedes desplegarla, detenerla o borrarla desde su tarjeta.');}
+ catch(e){notice(e.message,true)}finally{input.value=''}
+}
+async function removeApplication(){
+ if(!selected||!confirm('¿Eliminar esta aplicación y detener sus contenedores?'))return;
+ try{await api('/apps/'+encodeURIComponent(selected),{method:'DELETE'});back();notice('Aplicación eliminada.')}
+ catch(e){notice(e.message,true)}
+}
+async function action(which){if(requesting||!selected)return;if(which==='stop'&&!confirm('¿Detener los contenedores de esta aplicación?'))return;requesting=true;notice(which==='deploy'?'Creando contenedores Docker reales; el primer arranque puede tardar por las imágenes…':'Deteniendo los contenedores…');try{await api('/apps/'+encodeURIComponent(selected)+'/'+which,{method:'POST'});notice(which==='deploy'?'Despliegue realizado. Los monitores y adaptaciones funcionan automáticamente.':'Contenedores detenidos.')}catch(e){notice(e.message,true)}finally{requesting=false;await updateDetail()}}
+setInterval(()=>{if(!requesting){if(selected)updateDetail();else refresh()}},3000);refresh();
+</script></body></html>
