@@ -1,6 +1,58 @@
+
+# ======================================
+# Plataforma de despliegue - TFG
+# ======================================
+
+# Python: bytecode, caches y pruebas
 __pycache__/
+*.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+
+# Entornos virtuales
 .venv/
+venv/
+env/
+
+# Secretos y configuraciones locales
 .env
-data/
-*.pyc
+.env.*
+!.env.example
+*.pem
+*.key
+.secrets/
+
+# Datos generados por la plataforma
+# Incluye estado, descargas y planes generados
+/data/
+
+# Aplicaciones importadas desde ZIP
+/imported/
+
+# Registros y archivos temporales
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Configuración local de editores
+.idea/
+.vscode/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IMPORTANTE:
+# Conservar configs/apps.json con {"apps": {}}
+# Conservar examples/ y sus ZIP
+# Conservar tests/
+
