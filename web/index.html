@@ -6,10 +6,322 @@
 <style>
 :root{color-scheme:dark;--bg:#0b1120;--panel:#141f32;--panel2:#1b2a40;--border:#30425b;--ink:#edf3ff;--muted:#9fafc5;--accent:#75adff;--green:#61d6ac;--red:#ff888e;--amber:#ffcc7e;--violet:#c4a6ff}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% -10%,#182b4e 0,transparent 40%),var(--bg);color:var(--ink);font:14px/1.5 system-ui,'Segoe UI',sans-serif}header{border-bottom:1px solid var(--border);padding:19px max(22px,4vw);background:#10192acc;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}h1,h2,h3,p{margin:0}h1{font-size:23px;letter-spacing:-.5px}h2{font-size:23px}h3{font-size:16px}.sub{color:var(--muted)}small{font-size:11px;color:var(--muted)}main{max-width:1450px;margin:auto;padding:26px 23px}.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.between{justify-content:space-between}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:15px}.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{border-radius:13px;background:var(--panel);border:1px solid var(--border);padding:18px}.card:hover{border-color:#49617e}.pill{border-radius:100px;background:#27384f;color:#c1ccda;padding:4px 11px;font-size:11px;letter-spacing:.2px;font-weight:650;white-space:nowrap}.pill.running,.pill.healthy{background:#123c33;color:var(--green)}.pill.violation,.pill.error{background:#562b36;color:var(--red)}.pill.deploying,.pill.stopping,.pill.pending{background:#523b22;color:var(--amber)}.section{margin:27px 0 12px}.hide{display:none!important}.action{cursor:pointer;background:#386cae;color:white;border:1px solid #4f83c5;border-radius:9px;padding:10px 15px;font:600 13px inherit}button{font-family:inherit;font-size:13px;font-weight:600}.action:hover{filter:brightness(1.17)}.action:disabled{opacity:.5;cursor:wait}.outline{background:#172740;border:1px solid var(--border)}.stop{background:#56303f;border:1px solid #8a4456}.kpi{padding:15px;background:var(--panel2);border:1px solid var(--border);border-radius:10px}.kpi b{display:block;font-size:26px;letter-spacing:-.8px}.kpi small{display:block}.service{transition:border-color .2s;position:relative;overflow:hidden}.service.failed{border-color:#ad505e;box-shadow:0 0 0 1px #66313d}.service.failed::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--red)}.service-name{font-weight:680;font-size:17px;letter-spacing:-.25px}.meta{font-size:12px;color:var(--muted);margin-top:3px}.meta code{color:#a9cfff;overflow-wrap:anywhere}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:16px}.metric{background:#0e192b;border:1px solid #293b54;padding:10px;border-radius:9px;min-width:0}.metric.fail{background:#381e2b;border-color:#a44b58}.metric-top{display:flex;justify-content:space-between;gap:6px}.metric strong{font-size:19px;display:block;margin:1px 0}.metric .bar{height:5px;background:#2a3b52;overflow:hidden;border-radius:20px;margin:8px 0 4px}.metric .fill{height:100%;border-radius:20px;background:var(--green)}.metric.fail .fill{background:var(--red)}svg.spark{display:block;height:31px;width:100%;margin-top:4px}.metric small{font-size:10px}.fault{background:#462334;border:1px solid #975066;border-radius:9px;color:#ffc1c7;padding:11px;margin-top:12px}.hero{padding:18px;background:linear-gradient(100deg,#162a42,#19223d);border:1px solid #344d73;border-radius:13px;margin-bottom:16px}.hero.warn{border-color:#ab5565;background:linear-gradient(90deg,#402534,#261c33)}.hero.ok{border-color:#428973;background:linear-gradient(95deg,#15362f,#19233b)}.hero .tag{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:1px}.hero .desc{margin-top:8px;font-size:17px;font-weight:650}.switch{display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);align-items:center;gap:10px;margin-top:11px}.switch .from,.switch .to{padding:12px;border-radius:9px;background:#0d1929;border:1px solid #2f455f;font-size:13px;overflow-wrap:anywhere}.switch .to{border-color:#3f8c73}.switch .arrow{font-size:23px;text-align:center;color:var(--green)}.stage{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:14px}.stage span{padding:5px 9px;background:#182c43;border-radius:6px;color:#b5c9e6;font-size:11px}.stage .separator{padding:0;background:transparent;color:var(--muted)}.timeline{padding:0;margin:0;list-style:none;max-height:435px;overflow:auto}.timeline li{border-left:2px solid #3c5575;margin-left:8px;padding:1px 5px 17px 15px;position:relative}.timeline li:before{content:'';position:absolute;left:-5px;top:5px;width:8px;height:8px;border-radius:50%;background:#6685b3}.timeline li.bad{border-color:#b44b62}.timeline li.bad:before{background:var(--red)}.timeline li.good{border-color:#3a9274}.timeline li.good:before{background:var(--green)}.timeline li:last-child{padding-bottom:0}time{color:var(--muted);font-size:11px;display:block}.timeline strong{font-size:13px}.timeline p{font-size:12px;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}.note{font-size:11px;color:var(--muted);margin:22px 0 8px}.notice{display:none;padding:13px 16px;border:1px solid #597bb0;background:#193151;border-radius:9px;margin:0 0 15px}.notice.bad{background:#49242e;border-color:#aa5367}.empty{padding:24px;color:var(--muted)}.dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block}.dot.red{background:var(--red)}.hint{font-size:12px;color:var(--muted)}@media(max-width:850px){.cols{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:18px 14px}}@media(max-width:450px){.grid{grid-template-columns:1fr}.switch{grid-template-columns:1fr}.switch .arrow{transform:rotate(90deg)}header{padding:14px}}
+
+/* ==========================================
+   MODO CLARO - CONTRASTE REFORZADO
+   ========================================== */
+
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #dce4ed;
+    --panel: #ffffff;
+    --panel2: #e2e8f0;
+    --border: #64748b;
+
+    --ink: #0f172a;
+    --muted: #334155;
+
+    --accent: #1e40af;
+    --green: #166534;
+    --red: #991b1b;
+    --amber: #854d0e;
+    --violet: #5b21b6;
+}
+
+/* Fondo general */
+
+[data-theme="light"] body {
+    background: var(--bg);
+    color: var(--ink);
+}
+
+/* Cabecera */
+
+[data-theme="light"] header {
+    background: #ffffff;
+    border-bottom: 2px solid #64748b;
+    box-shadow: 0 3px 10px #0f172a15;
+}
+
+/* Tarjetas y servicios */
+
+[data-theme="light"] .card {
+    background: #ffffff;
+    border: 1.5px solid #64748b;
+    box-shadow: 0 3px 8px #0f172a18;
+}
+
+[data-theme="light"] .card:hover {
+    border-color: #1e40af;
+}
+
+[data-theme="light"] .service {
+    background: #ffffff;
+    border: 1.5px solid #64748b;
+}
+
+[data-theme="light"] .service.failed {
+    background: #fff5f5;
+    border: 2px solid #991b1b;
+    box-shadow: 0 0 0 1px #991b1b;
+}
+
+/* Textos secundarios */
+
+[data-theme="light"] small,
+[data-theme="light"] .muted,
+[data-theme="light"] .meta {
+    color: #334155;
+}
+
+[data-theme="light"] .meta code {
+    color: #1e40af;
+    font-weight: 600;
+}
+
+/* Indicadores de estado */
+
+[data-theme="light"] .pill {
+    background: #e2e8f0;
+    color: #1e293b;
+    border: 1px solid #64748b;
+    font-weight: 700;
+}
+
+[data-theme="light"] .pill.running,
+[data-theme="light"] .pill.healthy {
+    background: #dcfce7;
+    color: #14532d;
+    border: 1px solid #166534;
+}
+
+[data-theme="light"] .pill.violation,
+[data-theme="light"] .pill.error {
+    background: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #991b1b;
+}
+
+[data-theme="light"] .pill.deploying,
+[data-theme="light"] .pill.stopping,
+[data-theme="light"] .pill.pending {
+    background: #fef3c7;
+    color: #78350f;
+    border: 1px solid #92400e;
+}
+
+/* Botones */
+
+[data-theme="light"] .action {
+    background: #1e40af;
+    border: 1px solid #172554;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+[data-theme="light"] .action:hover {
+    background: #172554;
+    color: #ffffff;
+}
+
+[data-theme="light"] .outline {
+    background: #ffffff;
+    border: 1.5px solid #475569;
+    color: #0f172a;
+}
+
+[data-theme="light"] .outline:hover {
+    background: #dbeafe;
+    border-color: #1e40af;
+    color: #1e3a8a;
+}
+
+[data-theme="light"] .stop {
+    background: #991b1b;
+    border: 1px solid #7f1d1d;
+    color: #ffffff;
+}
+
+[data-theme="light"] .stop:hover {
+    background: #7f1d1d;
+    color: #ffffff;
+}
+
+[data-theme="light"] button:disabled {
+    background: #cbd5e1;
+    border-color: #64748b;
+    color: #475569;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+/* Campos de formulario */
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1.5px solid #64748b;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+    color: #475569;
+}
+
+/* Tarjetas de métricas QoS */
+
+[data-theme="light"] .metric {
+    background: #f1f5f9;
+    border: 1.5px solid #64748b;
+    color: #0f172a;
+}
+
+[data-theme="light"] .metric.fail {
+    background: #fee2e2;
+    border: 2px solid #991b1b;
+}
+
+[data-theme="light"] .metric .bar {
+    background: #b4c0d0;
+}
+
+/* Incumplimientos QoS */
+
+[data-theme="light"] .fault {
+    background: #fee2e2;
+    border: 1.5px solid #991b1b;
+    color: #7f1d1d;
+}
+
+/* Paneles de estado */
+
+[data-theme="light"] .hero {
+    background: #dbeafe;
+    border: 1.5px solid #1e40af;
+    color: #172554;
+}
+
+[data-theme="light"] .hero.warn {
+    background: #fee2e2;
+    border: 1.5px solid #991b1b;
+    color: #7f1d1d;
+}
+
+[data-theme="light"] .hero.ok {
+    background: #dcfce7;
+    border: 1.5px solid #166534;
+    color: #14532d;
+}
+
+/* Cambios de alternativas */
+
+[data-theme="light"] .switch .from,
+[data-theme="light"] .switch .to {
+    background: #ffffff;
+    border: 1.5px solid #64748b;
+    color: #0f172a;
+}
+
+[data-theme="light"] .switch .to {
+    background: #dcfce7;
+    border-color: #166534;
+}
+
+/* Etapas del despliegue */
+
+[data-theme="light"] .stage span {
+    background: #dbeafe;
+    border: 1px solid #1e40af;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+[data-theme="light"] .stage .separator {
+    background: transparent;
+    border: none;
+    color: #334155;
+}
+
+/* Historial de eventos */
+
+[data-theme="light"] .timeline li {
+    border-color: #64748b;
+    color: #0f172a;
+}
+
+[data-theme="light"] .timeline li.bad {
+    border-color: #991b1b;
+}
+
+[data-theme="light"] .timeline li.good {
+    border-color: #166534;
+}
+
+/* Notificaciones */
+
+[data-theme="light"] .notice {
+    background: #dbeafe;
+    border: 1.5px solid #1e40af;
+    color: #172554;
+}
+
+[data-theme="light"] .notice.bad {
+    background: #fee2e2;
+    border: 1.5px solid #991b1b;
+    color: #7f1d1d;
+}
+
+/* Gráficas */
+
+[data-theme="light"] .metric svg polyline,
+[data-theme="light"] .metric svg path {
+    stroke-width: 2.5;
+}
+
+/* Accesibilidad mediante teclado */
+
+[data-theme="light"] button:focus-visible,
+[data-theme="light"] input:focus-visible,
+[data-theme="light"] select:focus-visible,
+[data-theme="light"] textarea:focus-visible,
+[data-theme="light"] a:focus-visible {
+    outline: 3px solid #1e40af;
+    outline-offset: 4px;
+}
 </style>
 </head>
 <body>
-<header><div><h1>⬡ Deployment Platform</h1><small>Control de despliegues · Contenedores Docker reales · Monitorización QoS</small></div><div class="row"><span class="pill" id="docker">Verificando Docker…</span><span class="pill" id="worker">Monitor Worker…</span></div></header>
+
+<header>
+    <div>
+        <h1>⬡ Deployment Platform</h1>
+        <small>
+            Control de despliegues · Contenedores Docker reales · Monitorización QoS
+        </small>
+    </div>
+
+    <div class="row">
+        <span class="pill" id="docker">
+            Verificando Docker…
+        </span>
+
+        <span class="pill" id="worker">
+            Monitor Worker…
+        </span>
+
+        <button
+            id="themeToggle"
+            class="action outline"
+            type="button"
+            onclick="toggleTheme()">
+            Modo claro
+        </button>
+    </div>
+</header>
+
 <main>
 <div id="notice" class="notice"></div>
 <section id="catalog"><div class="row between section"><div><h2>Aplicaciones</h2><p class="sub">Selecciona una aplicación para consultar los servicios y los cambios de despliegue.</p></div><div class="row"><label class="action" for="uploadApp">+ Añadir aplicación (ZIP)</label><input id="uploadApp" type="file" accept=".zip" style="display:none" onchange="uploadApplication(this)"><button id="deployAll" class="action" onclick="deployAll()">Desplegar todas</button><button class="action outline" onclick="refresh()">Actualizar</button></div></div><div id="apps" class="grid"></div></section>
@@ -25,6 +337,39 @@
 <p class="note">Solo se consultan métricas QoS, estados de contenedor y eventos de despliegue. No se solicitan ni muestran temperaturas, humedad, lecturas ni resultados funcionales. Las métricas y sus degradaciones proceden de los microservicios; el planificador escoge alternativas de REQ; las sustituciones ejecutan comandos Docker reales.</p>
 </main>
 <script>
+
+function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+
+    localStorage.setItem('deployment-theme', theme);
+
+    const button = document.getElementById('themeToggle');
+
+    if (button) {
+        button.textContent = theme === 'dark'
+            ? '☀ Modo claro'
+            : '☾ Modo oscuro';
+    }
+}
+
+function toggleTheme() {
+    const current = document.documentElement.dataset.theme;
+
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+const savedTheme = localStorage.getItem('deployment-theme');
+
+const preferredTheme = window.matchMedia(
+    '(prefers-color-scheme: dark)'
+).matches ? 'dark' : 'light';
+
+applyTheme(
+    ['light', 'dark'].includes(savedTheme)
+        ? savedTheme
+        : preferredTheme
+);
+
 let selected=null,requesting=false;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -109,7 +454,7 @@ async function deployAll(){
 
 function back(){selected=null;$('catalog').classList.remove('hide');$('detail').classList.add('hide');$('notice').style.display='none';refresh()}
 async function openApp(id){selected=id;$('catalog').classList.add('hide');$('detail').classList.remove('hide');$('notice').style.display='none';await updateDetail()}
-function sparkline(history,key,invalid){const vals=history.map(e=>e.metrics?.[key]).filter(v=>typeof v==='number');if(vals.length<2)return '';let lo=Math.min(...vals),hi=Math.max(...vals);if(hi===lo){lo-=1;hi+=1}const points=vals.map((v,i)=>`${(i/(vals.length-1)*100).toFixed(1)},${(29-(v-lo)/(hi-lo)*24).toFixed(1)}`).join(' ');return `<svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-label="Tendencia reciente"><polyline points="${points}" fill="none" stroke="${invalid?'#ff888e':'#75adff'}" stroke-width="1.65" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`}
+function sparkline(history,key,invalid){const vals=history.map(e=>e.metrics?.[key]).filter(v=>typeof v==='number');if(vals.length<2)return '';let lo=Math.min(...vals),hi=Math.max(...vals);if(hi===lo){lo-=1;hi+=1}const points=vals.map((v,i)=>`${(i/(vals.length-1)*100).toFixed(1)},${(29-(v-lo)/(hi-lo)*24).toFixed(1)}`).join(' ');return `<svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" aria-label="Tendencia reciente"><polyline points="${points}" fill="none" stroke="${invalid?'var(--red)':'var(--accent)'}" stroke-width="1.65" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`}
 function metricHTML(key,label,unit,n,limit,history){const fail=typeof n==='number'&&(('max'in limit&&n>limit.max)||('min'in limit&&n<limit.min));const boundary='max'in limit?limit.max:limit.min;const ratio=typeof n==='number'&&boundary?('max'in limit?n/boundary:boundary/Math.max(n,.0001)):0;const pct=Math.max(0,Math.min(100,ratio*85));const limitText=('max'in limit?'Máximo ':'Mínimo ')+vnum(boundary);return `<div class="metric ${fail?'fail':''}"><div class="metric-top"><small>${esc(label)}</small>${fail?'<span style="color:var(--red)">⚠</span>':''}</div><strong>${vnum(n)} <small>${esc(unit)}</small></strong><div class="bar"><div class="fill" style="width:${pct.toFixed(1)}%"></div></div><small>${esc(limitText)}</small>${sparkline(history,key,fail)}</div>`}
 function serviceHTML(id,s){
  const m=s.monitor||{},spec=s.service.definition||{},limits=spec.monitor?.limits||{},history=m.history||[];
