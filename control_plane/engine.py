@@ -10,6 +10,8 @@ import time
 import json
 import re
 import shutil
+import os
+import stat
 
 from .backends import DockerBackend
 from .plan import Service, compare, parse_plan
@@ -18,6 +20,14 @@ from .planning import RandomPlanProvider
 from .specifications import normalize
 from .repositories import GitRepositories
 
+
+def remove_directory(path):
+    def handle_error(func, filename, exc_info):
+        os.chmod(filename, stat.S_IRWXU)
+        func(filename)
+
+    if path.exists():
+        shutil.rmtree(path, onerror=handle_error)
 
 class Platform:
     def __init__(self, root: Path, data_dir: Path | None = None, backend=None):
@@ -111,8 +121,8 @@ class Platform:
                                              if e['app'] != app_id]
                 self._save_registry()
                 self.store.save()
-            shutil.rmtree(self.root / 'imported' / app_id, ignore_errors=True)
-            shutil.rmtree(self.store.root / 'checkouts' / app_id, ignore_errors=True)
+            remove_directory(self.root / 'imported' / app_id)
+            remove_directory(self.store.root / 'checkouts' / app_id)
             # Las imágenes de la app anterior no deben reutilizarse al reimportar.
             if hasattr(self.backend, 'forget_app'):
                 self.backend.forget_app(app_id)

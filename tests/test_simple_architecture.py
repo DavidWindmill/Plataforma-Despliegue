@@ -26,7 +26,7 @@ def test_catologo_vacio_e_importacion_sin_git(tmp_path, monkeypatch):
     monkeypatch.setattr(GitRepositories, 'clone', fail)
     assert p.list_apps() == []
     for name in ('app-a', 'app-b'):
-        info = import_application(p, EXAMPLES / f'{name}.zip')
+        info = import_application(p, EXAMPLES / {'app-a': 'AppA_OAS_REQ_Inicial.zip', 'app-b': 'AppB_OAS_REQ_Inicial.zip'}[name], filename=f'{name}.zip')
         assert info['id'] == name and info['status'] == 'registered'
         assert (p.root / 'imported' / name / 'OAS').is_dir()
         assert (p.root / 'imported' / name / 'REQ').is_dir()
@@ -36,9 +36,11 @@ def test_catologo_vacio_e_importacion_sin_git(tmp_path, monkeypatch):
     assert [r['id'] for r in p.list_apps()] == ['app-b']
 
 
-def test_req_y_oas_fuentes_de_verdad():
-    qos = normalize(EXAMPLES / 'app-a')
-    plan = json.loads((EXAMPLES / 'app-a' / 'app.json').read_text())
+def test_req_y_oas_fuentes_de_verdad(tmp_path):
+    with ZipFile(EXAMPLES / 'AppA_OAS_REQ_Inicial.zip') as z:
+        z.extractall(tmp_path)
+    qos = normalize(tmp_path)
+    plan = json.loads((tmp_path / 'app.json').read_text())
     assert list(plan) == ['services']
     assert all(set(s) == {'id', 'alternative'} for s in plan['services'])
     services = parse_plan(plan, qos)
@@ -52,10 +54,16 @@ def test_req_y_oas_fuentes_de_verdad():
     assert 'groveralg-1' in qos['categories']['search']['req']['alternatives']
 
 
-def test_plan_cuantico_necesita_dos_contenedores():
-    qos = normalize(EXAMPLES / 'app-a')
-    initial = json.loads((EXAMPLES / 'app-a' / 'app.json').read_text())
-    hybrid = json.loads((EXAMPLES / 'app-a-hybrid-plan.json').read_text())
+def test_plan_cuantico_necesita_dos_contenedores(tmp_path):
+    from copy import deepcopy
+    with ZipFile(EXAMPLES / 'AppA_OAS_REQ_Inicial.zip') as z:
+        z.extractall(tmp_path)
+    qos = normalize(tmp_path)
+    initial = json.loads((tmp_path / 'app.json').read_text())
+    hybrid = deepcopy(initial)
+    for service in hybrid['services']:
+        if service['id'] == 'search00':
+            service['alternative'] = 'groveralg-1'
     old, new = parse_plan(initial, qos), parse_plan(hybrid, qos)
     assert 'search00-qpu' not in old
     assert new['search00'].definition['bindings']['QPU_URL'] == 'search00-qpu'
@@ -82,7 +90,7 @@ def test_zip_no_acepta_zip_slip(tmp_path):
 
 def test_sin_catalog_y_sin_codigo_local():
     for name in ('app-a','app-b'):
-        with ZipFile(EXAMPLES / f'{name}.zip') as z:
+        with ZipFile(EXAMPLES / {'app-a': 'AppA_OAS_REQ_Inicial.zip', 'app-b': 'AppB_OAS_REQ_Inicial.zip'}[name]) as z:
             files = set(z.namelist())
             assert 'app.json' in files
             assert not any('catalog' in n or 'platform.json' in n or 'plans/' in n for n in files)
@@ -93,7 +101,7 @@ def test_plan_invalido_al_importar(tmp_path):
     p = create_platform(tmp_path)
     archive = tmp_path / 'bad-app.zip'
     with ZipFile(archive, 'w') as z:
-        with ZipFile(EXAMPLES / 'app-a.zip') as original:
+        with ZipFile(EXAMPLES / 'AppA_OAS_REQ_Inicial.zip') as original:
             for name in original.namelist():
                 z.writestr(name, '{"services":[{"id":"sensor00","alternative":"unknown"}]}' if name=='app.json' else original.read(name))
     with pytest.raises(ValueError, match='alternativa no definida'):
@@ -122,9 +130,15 @@ def test_botones_catalogo_y_api_desplegar_detener_borrar(tmp_path, monkeypatch):
     monkeypatch.setattr(api, 'platform', platform)
     monkeypatch.setattr(api, 'monitors', MonitorManager(platform))
     with TestClient(api.app) as client:
-        page=client.get('/').text if (root / 'web/index.html').exists() else (EXAMPLES.parent / 'web/index.html').read_text()
+        page = (
+            client.get('/').text
+            if (root / 'web/index.html').exists()
+            else (EXAMPLES.parent / 'web/index.html').read_text(
+                encoding='utf-8'
+            )
+        )
         assert all(f"catalogAction('${{id}}','{operation}')" in page for operation in ('deploy','stop','delete'))
-        with (EXAMPLES / 'app-a.zip').open('rb') as f:
+        with (EXAMPLES / 'AppA_OAS_REQ_Inicial.zip').open('rb') as f:
             response = client.post('/api/apps/import', files={'file': ('app-a.zip',f,'application/zip')})
         assert response.status_code == 200
         assert client.post('/api/apps/app-a/deploy').status_code == 200

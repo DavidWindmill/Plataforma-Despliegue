@@ -7,6 +7,15 @@ from pathlib import Path
 import os
 import shutil
 import subprocess
+import stat
+
+def remove_readonly(func, path, exc):
+    """Permite eliminar archivos de solo lectura en Windows."""
+    if not isinstance(exc, PermissionError):
+        raise exc
+
+    os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
+    func(path)
 
 
 class GitRepositories:
@@ -56,7 +65,7 @@ class GitRepositories:
         # Convertimos ese error en un mensaje controlado para la interfaz web.
         try:
             if destination.exists():
-                shutil.rmtree(destination)
+                shutil.rmtree(destination, onexc=remove_readonly)
             temporary.rename(destination)
         except OSError as exc:
             raise RuntimeError(

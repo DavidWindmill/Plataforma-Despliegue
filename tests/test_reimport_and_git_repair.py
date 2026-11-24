@@ -19,7 +19,10 @@ def make_git_repo(tmp_path, with_dockerfile=True):
     git('init', '-b', 'main', cwd=repo)
     git('config', 'user.email', 'test@example.com', cwd=repo)
     git('config', 'user.name', 'Test', cwd=repo)
-    (repo / 'README.md').write_text('Prueba de clonación\n')
+    (repo / 'README.md').write_text(
+        'Prueba de clonación\n',
+        encoding='utf-8'
+    )
     if with_dockerfile:
         (repo / 'Dockerfile').write_text('FROM scratch\n')
     git('add', '.', cwd=repo)
@@ -53,11 +56,11 @@ def test_borrar_e_importar_no_recupera_eventos_antiguos(tmp_path):
     (platform_root / 'configs').mkdir(parents=True)
     (platform_root / 'configs' / 'apps.json').write_text('{"apps":{}}')
     platform = Platform(platform_root, tmp_path / 'state')
-    example = Path(__file__).resolve().parents[1] / 'examples' / 'app-a.zip'
-    import_application(platform, example)
+    example = Path(__file__).resolve().parents[1] / 'examples' / 'AppA_OAS_REQ_Inicial.zip'
+    import_application(platform, example, filename='app-a.zip')
     platform.store.event('app-a', 'deployment_failed', error='antiguo')
     assert platform.details('app-a')['events']
     platform.remove_app('app-a')
-    import_application(platform, example)
+    import_application(platform, example, filename='app-a.zip')
     assert platform.details('app-a')['events'] == []
     assert platform.details('app-a')['status'] == 'registered'

@@ -50,8 +50,8 @@ def test_full_cycle_lazily_downloads_git(tmp_path, monkeypatch):
     monkeypatch.setattr(GitRepositories,'clone',fake_clone)
     backend=DockerFake()
     platform=Platform(root,tmp_path/'store',backend)
-    z=Path(__file__).resolve().parents[1]/'examples/app-a.zip'
-    imported=import_application(platform,z)
+    z=Path(__file__).resolve().parents[1]/'examples/AppA_OAS_REQ_Inicial.zip'
+    imported=import_application(platform,z, filename='app-a.zip')
     assert imported['status']=='registered'
     assert not clones
     assert sum(op['action']=='create' for op in platform.analyze('app-a'))==6
@@ -92,7 +92,7 @@ def test_http_import_analysis_and_delete(tmp_path, monkeypatch):
     monkeypatch.setattr(api,'monitors',MonitorManager(platform))
     with TestClient(api.app) as client:
         assert client.get('/api/apps').json()==[]
-        path=Path(__file__).resolve().parents[1]/'examples/app-a.zip'
+        path=Path(__file__).resolve().parents[1]/'examples/AppA_OAS_REQ_Inicial.zip'
         with path.open('rb') as f:
             response=client.post('/api/apps/import',files={'file':('app-a.zip',f,'application/zip')})
         assert response.status_code==200, response.text

@@ -53,7 +53,7 @@ def platform_with_docker(tmp_path, monkeypatch, apps=('app-a',)):
     backend = TrackingDocker()
     platform = Platform(root, tmp_path / 'store', backend)
     for name in apps:
-        import_application(platform, ROOT / 'examples' / f'{name}.zip')
+        import_application(platform, ROOT / 'examples' / {'app-a': 'AppA_OAS_REQ_Inicial.zip', 'app-b': 'AppB_OAS_REQ_Inicial.zip'}[name], filename=f'{name}.zip')
     return platform, backend
 
 
@@ -151,19 +151,45 @@ def test_api_desplegar_todas_renombrar_y_web(tmp_path, monkeypatch):
     assert 'spec.alternative' in page and 'container_id' in page
 
 
-def test_fallos_menos_frecuentes_sin_jitter_en_metricas_de_req(monkeypatch):
-    monkeypatch.setenv('SERVICE_VARIANT','sensor-2')
-    for file in REPOS.glob('app-*/**/qos_faults.py'):
+def test_fallos_qos_internos_y_metricas_normales_conformes(monkeypatch):
+    monkeypatch.delenv('SERVICE_VARIANT', raising=False)
+    files = sorted(REPOS.glob('app-*/**/qos_faults.py'))
+    assert len(files) == 9, 'Se necesitan los nueve repositorios de microservicios junto a la plataforma'
+    for file in files:
         data = runpy.run_path(str(file))
         fault = data['FaultProfile']()
-        assert fault.low == 240 and fault.high == 480
-        assert fault.probability == 0.06
-    sensor = runpy.run_path(str(REPOS/'app-a-sensor/sensor_service/qos_faults.py'))
-    fault = sensor['FaultProfile']()
-    for _ in range(100):
-        metrics = fault.decorate({'execution_time':10,'availability':24,'reliability':0.1})
-        assert metrics['execution_time'] == 10   # no falso positivo por jitter
-        assert metrics['availability'] == 24
+        assert 0 < fault.low <= fault.high, file
+        assert 0 < fault.probability <= 1, file
+
+        # Valores de partida conformes a los limites locales de cada variante.
+        base = {key: float(rule['min']) if 'min' in rule else float(rule['max']) * 0.5
+                for key, rule in fault.limits.items()}
+        assert base, file
+
+        def violations(metrics):
+            return [key for key, rule in fault.limits.items()
+                    if ('min' in rule and metrics[key] < rule['min'])
+                    or ('max' in rule and metrics[key] > rule['max'])]
+
+        # Evitar sorteos durante la prueba de funcionamiento normal.
+        fault.rng.seed(42)
+        fault.next_at = float('inf')
+        for _ in range(100):
+            fault.last_slot = None  # renovar las fluctuaciones sin esperar
+            assert not violations(fault.decorate(base)), file
+
+        # Forzar una oportunidad de fallo sin esperar minutos ni depender del azar.
+        fault.probability = 1.0
+        fault.next_at = 0.0
+        degraded = fault.decorate(base)
+        assert violations(degraded), file
+        assert fault.values, file
+
+        # Comprobar la recuperacion cuando expira el fallo.
+        fault.expires_at = 1.0
+        fault.next_at = float('inf')
+        assert not violations(fault.decorate(base)), file
+        assert not fault.values, file
 
 
 def test_error_in_recovery_marks_app_as_error_and_stops_monitoring(tmp_path, monkeypatch):
@@ -240,7 +266,7 @@ def test_comandos_docker_de_sustitucion_no_solo_estado_web(tmp_path, monkeypatch
     monkeypatch.setattr(GitRepositories,'clone',clone)
     docker=SimulatedCLI()
     platform=Platform(root,tmp_path/'store',docker)
-    import_application(platform,ROOT/'examples/app-a.zip')
+    import_application(platform,ROOT/'examples/AppA_OAS_REQ_Inicial.zip', filename='app-a.zip')
     first=platform.apply('app-a')
     original=first['active']['search00']['runtime']['container_id']
     result=platform.on_violation('app-a','search00',['execution_time: incumplimiento'],original)

@@ -27,9 +27,17 @@ def add_example(name):
     """Sube un paquete de especificaciones. Todavia no clona ningun Git."""
     if name in {x['id'] for x in request('GET', '/api/apps')}:
         return
-    path = root / 'examples' / f'{name}.zip'
+    examples = {
+        'app-a': 'AppA_OAS_REQ_Inicial.zip',
+        'app-b': 'AppB_OAS_REQ_Inicial.zip'
+    }
+
+    path = root / 'examples' / examples[name]
     with path.open('rb') as file:
-        response = client.post('/api/apps/import', files={'file': (path.name, file, 'application/zip')})
+        response = client.post(
+            '/api/apps/import',
+            files={'file': (f'{name}.zip', file, 'application/zip')}
+        )
     response.raise_for_status()
     print('Importado:', name)
 

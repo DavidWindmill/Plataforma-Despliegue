@@ -334,7 +334,6 @@
  <div class="row between section"><h2>Métricas por microservicio</h2><span class="hint"><span class="dot"></span> Refresco web: 3 s · Muestreo del monitor: 4 s</span></div><div id="serviceList" class="grid"></div>
  <div class="row between section"><h2>Historial de operaciones</h2><span class="hint">Fallos → planificación → comparación → contenedores nuevos</span></div><div class="card"><ul id="events" class="timeline"></ul></div>
 </section>
-<p class="note">Solo se consultan métricas QoS, estados de contenedor y eventos de despliegue. No se solicitan ni muestran temperaturas, humedad, lecturas ni resultados funcionales. Las métricas y sus degradaciones proceden de los microservicios; el planificador escoge alternativas de REQ; las sustituciones ejecutan comandos Docker reales.</p>
 </main>
 <script>
 
@@ -492,7 +491,7 @@ function adaptationHTML(d){
   const before=changes.map(x=>x.service+' ('+x.from+')').join(' + ');
   const after=changes.map(x=>x.service+' ('+x.to+')').join(' + ');
   const removed=last.removed_containers||{},created=last.created_containers||{};
-  return `<div class="tag">✓ Adaptación ejecutada en Docker · ${esc(new Date(last.time).toLocaleString('es-ES'))}</div><div class="desc">${esc(changes.length)} alternativa(s) sustituida(s) realmente</div><div class="switch"><div class="from"><small>ANTES · alternativas retiradas</small><div><strong>${esc(before)}</strong></div><small>${esc(Object.entries(removed).map(([k,v])=>k+': '+v.container_id).join(' · '))}</small></div><div class="arrow">→</div><div class="to"><small>DESPUÉS · alternativas desplegadas</small><div><strong>${esc(after)}</strong></div><small>${esc(Object.entries(created).map(([k,v])=>k+': '+v.container_id).join(' · '))}</small></div></div><p class="sub" style="margin-top:10px">${last.kept?.length||0} contenedores sin cambios · ${Object.keys(created).length} nuevos identificadores Docker</p>`;
+  return `<div class="tag">✓ Adaptación ejecutada en Docker · ${esc(new Date(last.time).toLocaleString('es-ES'))}</div><div class="desc">${esc(changes.length)} alternativa(s) sustituida(s)</div><div class="switch"><div class="from"><small>ANTES · alternativas retiradas</small><div><strong>${esc(before)}</strong></div><small>${esc(Object.entries(removed).map(([k,v])=>k+': '+v.container_id).join(' · '))}</small></div><div class="arrow">→</div><div class="to"><small>DESPUÉS · alternativas desplegadas</small><div><strong>${esc(after)}</strong></div><small>${esc(Object.entries(created).map(([k,v])=>k+': '+v.container_id).join(' · '))}</small></div></div><p class="sub" style="margin-top:10px">${last.kept?.length||0} contenedores sin cambios · ${Object.keys(created).length} nuevos identificadores Docker</p>`;
  }
  return '<div class="tag">Sin incidencias</div><div class="desc">Los monitores están a la espera de un incumplimiento QoS.</div>';
 }
